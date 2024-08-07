@@ -18,7 +18,9 @@ namespace MyAPI.Controllers {
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto) {
-
+      if (!ModelState.IsValid) {
+        return BadRequest(ModelState);
+      }
       // Map DTO to domain model
       var walkDomainModel = _mapper.Map<Walk>(addWalkRequestDto);
       await _walkRepository.CreateAsync(walkDomainModel);
@@ -49,6 +51,9 @@ namespace MyAPI.Controllers {
     [HttpPut]
     [Route("{id:Guid}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto) {
+      if (!ModelState.IsValid) {
+        return BadRequest(ModelState);
+      }
       var walkDomainModel = _mapper.Map<Walk>(updateWalkRequestDto);
       walkDomainModel = await _walkRepository.UpdateAsync(id, walkDomainModel);
       if (walkDomainModel == null) {
