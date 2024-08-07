@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MyAPI.CustomActionFilters;
 using MyAPI.Models.Domain;
 using MyAPI.Models.Dto;
 using MyAPI.Models.DTO;
@@ -37,10 +38,8 @@ namespace MyAPI.Controllers {
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) {
-      if (!ModelState.IsValid) {
-        return BadRequest(ModelState);
-      }
       var regionDomainModel = _mapper.Map<Region>(addRegionRequestDto);
 
       regionDomainModel = await _regionRepository.CreateAsync(regionDomainModel);
@@ -52,10 +51,8 @@ namespace MyAPI.Controllers {
 
     [HttpPut]
     [Route("{id:Guid}")]
+    [ValidateModel]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto) {
-      if (!ModelState.IsValid) {
-        return BadRequest(ModelState);
-      }
       var regionDomainModel = _mapper.Map<Region>(updateRegionRequestDto);
 
       regionDomainModel = await _regionRepository.UpdateAsync(id, regionDomainModel);
