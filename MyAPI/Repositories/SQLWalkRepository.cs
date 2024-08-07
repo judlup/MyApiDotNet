@@ -16,6 +16,15 @@ namespace MyAPI.Repositories {
       return walk;
     }
 
+    public async Task<Walk?> DeleteAsync(Guid id) {
+      var existingWalk = await _dbcContext.Walks.FirstOrDefaultAsync(w => w.Id == id);
+      if (existingWalk == null) {
+        return null;
+      }
+      _dbcContext.Remove(existingWalk);
+      await _dbcContext.SaveChangesAsync();
+      return existingWalk;
+    }
 
     public async Task<List<Walk>> GetAllAsync() {
       return await _dbcContext.Walks.Include("Difficulty").Include("Region").ToListAsync();

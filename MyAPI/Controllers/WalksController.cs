@@ -57,5 +57,16 @@ namespace MyAPI.Controllers {
       var walkDto = _mapper.Map(updateWalkRequestDto, walkDomainModel);
       return Ok(walkDto);
     }
+
+    [HttpDelete]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> Delete([FromRoute] Guid id) {
+      var walkDomainModel = await _walkRepository.DeleteAsync(id);
+      if (walkDomainModel == null) {
+        return NotFound();
+      }
+      var walkDto = _mapper.Map<WalkDto>(walkDomainModel);
+      return Ok(walkDto);
+    }
   }
 }
