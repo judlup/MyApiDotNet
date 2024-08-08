@@ -32,7 +32,7 @@ namespace MyAPI.Repositories
       return existingWalk;
     }
 
-    public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool? isAcending = true)
+    public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool? isAcending = true, int pageNumber = 1, int pageSize = 1000)
     {
       var walks = _dbcContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -57,7 +57,11 @@ namespace MyAPI.Repositories
           walks = isAcending == true ? walks.OrderBy(w => w.LengthKm) : walks.OrderByDescending(w => w.LengthKm);
         }
       }
-      return await walks.ToListAsync();
+
+      // Pagination
+      var skipResults = (pageNumber - 1) * pageSize;
+
+      return await walks.Skip(skipResults).Take(pageSize).ToListAsync();
     }
 
     public async Task<Walk?> GetByIdAsync(Guid id)
