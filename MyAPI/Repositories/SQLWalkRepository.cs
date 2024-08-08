@@ -32,14 +32,29 @@ namespace MyAPI.Repositories
       return existingWalk;
     }
 
-    public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null)
+    public async Task<List<Walk>> GetAllAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool? isAcending = true)
     {
       var walks = _dbcContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+      // Filtering
       if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
       {
         if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
         {
           walks = walks.Where(w => w.Name.Contains(filterQuery));
+        }
+      }
+
+      // Sorting
+      if (string.IsNullOrWhiteSpace(sortBy) == false)
+      {
+        if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+        {
+          walks = isAcending == true ? walks.OrderBy(w => w.Name) : walks.OrderByDescending(w => w.Name);
+        }
+        else if (sortBy.Equals("Length", StringComparison.OrdinalIgnoreCase))
+        {
+          walks = isAcending == true ? walks.OrderBy(w => w.LengthKm) : walks.OrderByDescending(w => w.LengthKm);
         }
       }
       return await walks.ToListAsync();
