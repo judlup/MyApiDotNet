@@ -5,7 +5,7 @@ namespace MyAPI.Data
 {
     public class MyAPIDBContext : DbContext
     {
-        public MyAPIDBContext(DbContextOptions dbContextOptions): base(dbContextOptions)
+        public MyAPIDBContext(DbContextOptions<MyAPIDBContext> dbContextOptions): base(dbContextOptions)
         {
             
         }
